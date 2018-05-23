@@ -18,10 +18,10 @@ function setup() {
 }
 
 function draw() {
-  if (frames%5 == 0)
-    sortPixels();
+  if (frames%2 == 0)
+  sortPixels();
 
-  if (frames%500 == 0)
+  if (frames%200 == 0)
     reset();
 
   frames++;
@@ -44,9 +44,9 @@ function sortPixels() {
         pixels[index+randomVars[12]] = pixels[otherIndex+randomVars[13]];
         pixels[index+randomVars[14]] = pixels[otherIndex+randomVars[15]];
         pixels[index+randomVars[16]] = pixels[otherIndex+randomVars[17]];
-        pixels[otherIndex+randomVars[18]] = tempPixels[0]+randomVars[19];
-        pixels[otherIndex+randomVars[20]] = tempPixels[1]+randomVars[21];
-        pixels[otherIndex+randomVars[22]] = tempPixels[2]+randomVars[23];
+        pixels[otherIndex+randomVars[18]] = tempPixels[Math.abs((0+randomVars[19])%3)];
+        pixels[otherIndex+randomVars[20]] = tempPixels[Math.abs((1+randomVars[21])%3)];
+        pixels[otherIndex+randomVars[22]] = tempPixels[Math.abs((2+randomVars[23])%3)];
         changedAmount++;
       }
     }
@@ -75,7 +75,7 @@ function reset() {
 }
 
 function setRandomVars() {
-  for (var x=0;x<23;x++) {
-    randomVars[x] = round(random(-5,5));
+  for (var x=0;x<24;x++) {
+    randomVars[x] = round(random(-10,10));
   }
 }
