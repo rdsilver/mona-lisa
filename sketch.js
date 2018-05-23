@@ -19,7 +19,7 @@ function setup() {
 
 function draw() {
   if (frames%2 == 0)
-  sortPixels();
+    sortPixels();
 
   if (frames%200 == 0)
     reset();
