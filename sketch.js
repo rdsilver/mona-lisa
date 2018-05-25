@@ -1,9 +1,8 @@
 var img;
 var randomVars = [];
-var runningTotal = [];
-var runningTotalSize = 15;
+var randomVarLength = 24;
 var frames = 0;
-
+var randomSequence = true;
 
 function preload() {
   img = loadImage("assets/monaLisa.jpg");
@@ -14,23 +13,24 @@ function setup() {
   canvas = createCanvas(img.width, img.height);
   canvas.parent('sketch');
   image(img, 0, 0);
-  setRandomVars();
+
+  if (!window.location.hash)
+    setRandomVars();
+  else
+    decodeHash();
 }
 
 function draw() {
   if (frames%2 == 0)
     sortPixels();
 
-  if (frames%200 == 0)
+  if (frames%200 == 0 && randomSequence)
     reset();
 
   frames++;
 }
 
 function sortPixels() {
-  var changedAmount = 0;
-  var average = 0;
-
   loadPixels();
   for(var x=0;x<width;x++) {
     for(var y=height;y>=0;y--) {
@@ -47,22 +47,10 @@ function sortPixels() {
         pixels[otherIndex+randomVars[18]] = tempPixels[Math.abs((0+randomVars[19])%3)];
         pixels[otherIndex+randomVars[20]] = tempPixels[Math.abs((1+randomVars[21])%3)];
         pixels[otherIndex+randomVars[22]] = tempPixels[Math.abs((2+randomVars[23])%3)];
-        changedAmount++;
       }
     }
   }
   updatePixels();
-
-  // Check to see if reset is needed because the image is not doing anything
-  runningTotal.push(changedAmount);
-  if (runningTotal.length > runningTotalSize) {
-    runningTotal.shift();
-  }
-  average = round(runningTotal.reduce(getSum)/runningTotal.length);
-  if (average == changedAmount) {
-    reset();
-    frames=0;
-  }
 }
 
 function getSum(total, num) {
@@ -75,7 +63,37 @@ function reset() {
 }
 
 function setRandomVars() {
-  for (var x=0;x<24;x++) {
+  for (var x=0;x<randomVarLength;x++) 
     randomVars[x] = round(random(-10,10));
+
+  encodeHash();
+}
+
+function decodeHash() {
+  var pattern =  /^[0-9a-k]{24}$/;
+  var hash = window.location.hash.split('#')[1];
+  var isHashValid = pattern.test(hash) && hash.length == randomVarLength;
+  if (isHashValid) {
+    for (var x=0;x<hash.length;x++) 
+      randomVars[x] = parseInt(hash[x], 21) - 10;
+    
+    randomSequence = false;
+  } else {
+    setRandomVars();
+  }
+}
+
+function encodeHash() {
+  var hash = '';
+  for (var x=0;x<randomVarLength;x++) 
+    hash += (randomVars[x]+10).toString(21);
+
+  window.location.hash = hash;
+}
+
+function keyPressed() {
+  if (keyCode === RIGHT_ARROW) {
+    reset();
+    randomSequence = false;
   }
 }
