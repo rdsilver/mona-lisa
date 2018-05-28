@@ -3,6 +3,7 @@ var randomVars = [];
 var randomVarLength = 24;
 var frames = 0;
 var randomSequence = true;
+var slowDown = 2;
 
 function preload() {
   img = loadImage("assets/monaLisa.jpg");
@@ -13,6 +14,7 @@ function setup() {
   canvas = createCanvas(img.width, img.height);
   canvas.parent('sketch');
   image(img, 0, 0);
+  setSpeed();
 
   if (!window.location.hash)
     setRandomVars();
@@ -21,7 +23,7 @@ function setup() {
 }
 
 function draw() {
-  if (frames%2 == 0)
+  if (frames%slowDown == 0)
     sortPixels();
 
   if (frames%200 == 0 && randomSequence)
@@ -53,42 +55,9 @@ function sortPixels() {
   updatePixels();
 }
 
-function getSum(total, num) {
-    return total + num;
-}
-
 function reset() {
   image(img, 0, 0);
   setRandomVars();
-}
-
-function setRandomVars() {
-  for (var x=0;x<randomVarLength;x++) 
-    randomVars[x] = round(random(-10,10));
-
-  encodeHash();
-}
-
-function decodeHash() {
-  var pattern =  /^[0-9a-k]{24}$/;
-  var hash = window.location.hash.split('#')[1];
-  var isHashValid = pattern.test(hash) && hash.length == randomVarLength;
-  if (isHashValid) {
-    for (var x=0;x<hash.length;x++) 
-      randomVars[x] = parseInt(hash[x], 21) - 10;
-    
-    randomSequence = false;
-  } else {
-    setRandomVars();
-  }
-}
-
-function encodeHash() {
-  var hash = '';
-  for (var x=0;x<randomVarLength;x++) 
-    hash += (randomVars[x]+10).toString(21);
-
-  window.location.hash = hash;
 }
 
 function keyPressed() {
