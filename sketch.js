@@ -26,7 +26,7 @@ function draw() {
   if (frames%slowDown == 0)
     sortPixels();
 
-  if (frames%200 == 0 && randomSequence)
+  if (frames%150 == 0 && randomSequence)
     reset();
 
   frames++;
